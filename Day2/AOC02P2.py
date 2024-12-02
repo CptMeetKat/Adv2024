@@ -21,33 +21,24 @@ def main():
     for line in data.split("\n"):
         values = line.split()
 
-        if isSafe(values):
+        if isSafe(values, isDecreasing):
+            safe_reports+=1
+        elif isSafe(values, isIncreasing):
             safe_reports+=1
 
     print("Result: {}".format(safe_reports))
 
-def isSafe(values):
+def isSafe(values, test_array):
 
-    if not isIncreasing(values):
+    if not test_array(values):
         for i in range(len(values)):
             popped = values.pop(i)
-            if isIncreasing(values):
+            if test_array(values):
                 return True
             values.insert(i, popped)
-    else:
-        return True
+        return False
 
-
-    if not isDecreasing(values):
-        for i in range(len(values)):
-            popped = values.pop(i)
-            if isDecreasing(values):
-                return True
-            values.insert(i, popped)
-    else:
-        return True
-
-    return False
+    return True
 
 def isIncreasing(numbers):
     for i in range(len(numbers)-1):
