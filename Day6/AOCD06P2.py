@@ -32,8 +32,6 @@ def main():
                 obstruction_x, obstruction_y = move(direction,x,y)
         
             if obstruction_x != start_x or obstruction_y != start_y:
-                map[obstruction_y][obstruction_x] = "O"
-
                 path_type = traverse_with_obstruction(map, start_x, start_y, obstruction_x, obstruction_y)
                 if path_type == 1:
                     found.add("{},{}".format(obstruction_x, obstruction_y))
