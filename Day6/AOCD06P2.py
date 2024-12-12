@@ -26,15 +26,17 @@ def main():
         direction = path[i][2]
         obstruction_x, obstruction_y = move(direction,x,y)
 
-        if inRange(map, obstruction_x, obstruction_y) and map[obstruction_y][obstruction_x] == "#":
-            direction = turn(direction)
-            obstruction_x, obstruction_y = move(direction,x,y)
-        if inRange(map, obstruction_x, obstruction_y) and not (obstruction_x == start_x and obstruction_y == start_y):
-            map[obstruction_y][obstruction_x] = "O"
+        if inRange(map, obstruction_x, obstruction_y): #If double turn required, then code is inaccurate
+            if map[obstruction_y][obstruction_x] == "#":
+                direction = turn(direction)
+                obstruction_x, obstruction_y = move(direction,x,y)
+        
+            if obstruction_x != start_x or obstruction_y != start_y:
+                map[obstruction_y][obstruction_x] = "O"
 
-            path_type = traverse_with_obstruction(map, start_x, start_y, (obstruction_x, obstruction_y))
-            if path_type == 1:
-                found.add("{},{}".format(obstruction_x, obstruction_y))
+                path_type = traverse_with_obstruction(map, start_x, start_y, obstruction_x, obstruction_y)
+                if path_type == 1:
+                    found.add("{},{}".format(obstruction_x, obstruction_y))
 
     print("Result: {}".format(len(found)))
 
@@ -61,7 +63,7 @@ def traverse(map, start_x, start_y):
     return path
 
 
-def traverse_with_obstruction(map, start_x, start_y, obstruction=None):
+def traverse_with_obstruction(map, start_x, start_y, obstruction_x, obstruction_y):
 
     path_type = 0 # 0: terminating, 1: looping
 
@@ -74,7 +76,7 @@ def traverse_with_obstruction(map, start_x, start_y, obstruction=None):
     x, y = move(direction, x, y)
     while inRange(map, x, y) and ("{},{},{}".format(x,y,direction) not in visited):
 
-        if map[y][x] == "#" or (obstruction is not None and x == obstruction[0] and y == obstruction[1]):
+        if map[y][x] == "#" or x == obstruction_x and y == obstruction_y:
             direction = turn(direction)
             x,y = prev_x, prev_y
         else:
