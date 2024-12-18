@@ -147,7 +147,6 @@ def createVerticalAntinodes(antennaA, antennaB):
 
     up = getUpNode(antennaA, antennaB)
     down = getDownNode(antennaA, antennaB)
-    x_diff = abs(up.x - down.x)
     y_diff = abs(up.y - down.y)
     antinodes.append(Coordinate(up.x, up.y-y_diff))
     antinodes.append(Coordinate(down.x, down.y+y_diff))
