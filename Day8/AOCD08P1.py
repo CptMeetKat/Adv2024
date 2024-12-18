@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 
 import sys
+from collections import namedtuple
 
 max_width=0
 max_height=0
+
+Coordinate = namedtuple("Coordinate", ["x","y"])
 
 def main():
     if len(sys.argv) < 2:
@@ -56,7 +59,7 @@ def generateAntiNodes(map):
                 antennaB = positions[pos_b]
                 nodes = createAntiNodes(antennaA, antennaB) 
                 for elt in nodes:
-                    antinodes.add((elt[0],elt[1]))
+                    antinodes.add((elt.x,elt.y))
 
     return antinodes
 
@@ -72,25 +75,25 @@ def gradientDirection(a,b):
     return sign(   (b[1]-a[1])) / ((b[0]-a[0]))
 
 def getLeftNode(a,b):
-    if a[0] < b[0]:
+    if a.x < b.x:
         return a;
     else:
         return b
 
 def getRightNode(a,b):
-    if a[0] >= b[0]:
+    if a.x >= b.x:
         return a;
     else:
         return b
 
 def getUpNode(a,b):
-    if a[1] < b[1]:
+    if a.y < b.y:
         return a;
     else:
         return b
 
 def getDownNode(a,b):
-    if a[1] >= b[1]:
+    if a.y >= b.y:
         return a;
     else:
         return b
@@ -104,27 +107,27 @@ def createAntiNodes(antennaA, antennaB):
     down = getDownNode(antennaA, antennaB)
 
 
-    x_diff = abs(left[0] - right[0])
-    y_diff = abs(left[1] - right[1])
+    x_diff = abs(left.x - right.x)
+    y_diff = abs(left.y - right.y)
 
-    if antennaA[0] == antennaB[0]:
-        x_diff = abs(up[0] - down[0])
-        y_diff = abs(up[1] - down[1])
-        antinodes.append((up[0], up[1]-y_diff))
-        antinodes.append((down[0], down[1]+y_diff))
-    elif antennaA[1] == antennaB[1]:
-        antinodes.append((left[0] - x_diff, left[1]+y_diff))
-        antinodes.append((right[0] + x_diff, right[1]-y_diff))
+    if antennaA.x == antennaB.x:
+        x_diff = abs(up.x - down.x)
+        y_diff = abs(up.y - down.y)
+        antinodes.append(Coordinate(up.x, up.y-y_diff))
+        antinodes.append(Coordinate(down.x, down.y+y_diff))
+    if antennaA.y == antennaB.y:
+        antinodes.append(Coordinate(left.x - x_diff, left.y+y_diff))
+        antinodes.append(Coordinate(right.x + x_diff, right.y-y_diff))
     else:
         slope = gradientDirection(left, right)
         if slope < 0: # / gradient
-            antinodes.append((left[0] - x_diff, left[1]+y_diff))
-            antinodes.append((right[0] + x_diff, right[1]-y_diff))
+            antinodes.append(Coordinate(left.x - x_diff, left.y+y_diff))
+            antinodes.append(Coordinate(right.x + x_diff, right.y-y_diff))
         else: # \ gradient
-            antinodes.append((left[0] - x_diff, left[1]-y_diff))
-            antinodes.append((right[0] + x_diff, right[1]+y_diff))
-    
-    antinodes = [n for n in antinodes if inRange(n[0], n[1]) ]
+            antinodes.append(Coordinate(left.x - x_diff, left.y-y_diff))
+            antinodes.append(Coordinate(right.x + x_diff, right.y+y_diff))
+
+    antinodes = [n for n in antinodes if inRange(n.x, n.y) ]
 
     return antinodes
 
@@ -132,15 +135,16 @@ def createAntiNodes(antennaA, antennaB):
 def findNodeLocations(map):
 
     global max_height, max_width;
+
     locations = {}
     for y in range(max_height):
         for x in range(max_width):
             char = map[y][x]
             if char != "." :
                 if char in locations:
-                    locations[char].append((x,y))
+                    locations[char].append(Coordinate(x,y))
                 else:
-                    locations[char] = [(x,y)]
+                    locations[char] = [Coordinate(x,y)]
     return locations
 
 
