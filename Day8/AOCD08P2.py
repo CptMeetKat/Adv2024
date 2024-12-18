@@ -183,7 +183,6 @@ def createVerticalAntinodes(antennaA, antennaB):
 
     up = getUpNode(antennaA, antennaB)
     down = getDownNode(antennaA, antennaB)
-    x_diff = abs(up.x - down.x)
     y_diff = abs(up.y - down.y)
 
     modifier = 0
