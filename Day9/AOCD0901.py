@@ -35,8 +35,6 @@ def run(filename):
 
                 while diskmap[right] <= 0:
                     right -=2
-        if i >= right: 
-            break
 
     print("Result:", result)
 
