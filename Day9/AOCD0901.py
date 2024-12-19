@@ -15,27 +15,25 @@ def run(filename):
 
     result = 0
     length = len(diskmap)
-    position = 0
+    next_free = 0
 
     right = length-1
     for i in range(length):
-        file_id = int(i/2)
-        #render(diskmap)
-
         if i % 2 == 0:
             while diskmap[i] > 0:
-                result += file_id * position 
-                position+=1
-                diskmap[i] -= 1
+                file_id = int(i/2)
+                result += file_id * next_free 
+                next_free+=1
+                diskmap[i]-=1
         else:
             while diskmap[i] > 0 and i < right:
                 right_file_id = int(right/2)
-                result += right_file_id * position
+                result += right_file_id * next_free
                 diskmap[i]-=1
                 diskmap[right]-=1
-                position+=1
+                next_free+=1
 
-                while diskmap[right] <= 0: #breaks here on input3.txt
+                while diskmap[right] <= 0:
                     right -=2
         if i >= right: 
             break
